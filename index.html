@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meridian — AI Billing Resolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============ GLOBAL TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="logo-mark">M</span>
+    <span class="logo-word">Meridian</span>
+  </div>
+  <nav class="view-switch" role="tablist" aria-label="Prototype view">
+    <button class="view-switch-btn is-active" data-view="patient" role="tab" aria-selected="true">Patient</button>
+    <button class="view-switch-btn" data-view="provider" role="tab" aria-selected="false">Provider Dashboard</button>
+  </nav>
+  <div class="topbar-right">
+    <span class="proto-badge">Interview Prototype</span>
+  </div>
+</header>
+
+<!-- ============ PATIENT VIEW ============ -->
+<main id="view-patient" class="view view-patient is-active">
+  <div class="patient-shell">
+
+    <!-- Invoice summary -->
+    <section class="invoice-card">
+      <div class="invoice-card-top">
+        <div>
+          <p class="eyebrow">Statement · Riverside Family Medicine</p>
+          <h1 class="invoice-amount">$412.00</h1>
+        </div>
+        <span class="status-pill status-pill--due">Payment due</span>
+      </div>
+      <div class="invoice-meta">
+        <div class="invoice-meta-item">
+          <span class="invoice-meta-label">Service date</span>
+          <span class="invoice-meta-value">June 24, 2026</span>
+        </div>
+        <div class="invoice-meta-item">
+          <span class="invoice-meta-label">Visit</span>
+          <span class="invoice-meta-value">Annual wellness exam</span>
+        </div>
+        <div class="invoice-meta-item">
+          <span class="invoice-meta-label">Invoice #</span>
+          <span class="invoice-meta-value">INV-88213</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat -->
+    <section class="chat-card" aria-label="Billing assistant chat">
+      <div class="chat-header">
+        <div class="agent-avatar" aria-hidden="true">
+          <span class="agent-avatar-dot"></span>
+        </div>
+        <div>
+          <p class="chat-header-title">Billing Assistant</p>
+          <p class="chat-header-sub" id="agentStatus">Online · usually replies instantly</p>
+        </div>
+      </div>
+
+      <div class="chat-log" id="chatLog"></div>
+
+      <div class="quick-chips" id="quickChips">
+        <button class="chip" data-prompt="This charge doesn't look right">This charge doesn't look right</button>
+        <button class="chip" data-prompt="I already paid this">I already paid this</button>
+        <button class="chip" data-prompt="Can you explain this charge?">Explain this charge</button>
+        <button class="chip" data-prompt="I need a payment plan">I need a payment plan</button>
+      </div>
+
+      <form class="composer" id="composerForm">
+        <button type="button" class="composer-voice" id="voiceBtn" aria-label="Use voice input" title="Use voice input">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+            <path d="M5 11a7 7 0 0 0 14 0"></path>
+            <path d="M12 18v4"></path>
+          </svg>
+        </button>
+        <input type="text" id="composerInput" placeholder="Describe the issue, or type a question…" autocomplete="off" />
+        <button type="submit" class="composer-send" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 2 11 13"></path>
+            <path d="M22 2 15 22l-4-9-9-4 20-7Z"></path>
+          </svg>
+        </button>
+      </form>
+    </section>
+
+    <p class="patient-footnote">Every message here is reviewed against your policy, claim, and payment history in real time. Nothing is charged or refunded without a clear resolution.</p>
+  </div>
+</main>
+
+<!-- ============ PROVIDER DASHBOARD ============ -->
+<main id="view-provider" class="view view-provider">
+  <div class="dash-shell">
+
+    <!-- Sidebar -->
+    <aside class="dash-sidebar">
+      <div class="dash-logo">
+        <span class="logo-mark">M</span>
+        <span class="logo-word">Meridian</span>
+      </div>
+      <nav class="dash-nav">
+        <button class="dash-nav-item is-active" data-panel="overview">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Overview
+        </button>
+        <button class="dash-nav-item" data-panel="queue">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          Dispute Queue
+          <span class="dash-nav-count" id="queueCount">0</span>
+        </button>
+        <button class="dash-nav-item" data-panel="resolved">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+          Resolved by AI
+        </button>
+        <button class="dash-nav-item" data-panel="settings">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1Z"/></svg>
+          Settings
+        </button>
+      </nav>
+      <div class="dash-sidebar-footer">
+        <div class="dash-user">
+          <span class="dash-user-avatar">JT</span>
+          <div>
+            <p class="dash-user-name">Jordan Tran</p>
+            <p class="dash-user-role">Billing Operations</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <section class="dash-main">
+      <header class="dash-topline">
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h1 class="dash-title">Good afternoon, Jordan</h1>
+        </div>
+        <div class="dash-topline-actions">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="live-label">AI agent active · monitoring 24 open balances</span>
+        </div>
+      </header>
+
+      <!-- Stats -->
+      <div class="stat-grid" id="statGrid">
+        <div class="stat-card">
+          <p class="stat-label">Disputes this week</p>
+          <p class="stat-value" data-count="47">0</p>
+          <p class="stat-trend stat-trend--up">↑ 12% vs last week</p>
+        </div>
+        <div class="stat-card stat-card--accent">
+          <p class="stat-label">Auto-resolved by AI</p>
+          <p class="stat-value" data-count="41" data-suffix="">0</p>
+          <p class="stat-trend">87% resolution rate</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Avg. resolution time</p>
+          <p class="stat-value" data-static="2m 14s">0</p>
+          <p class="stat-trend stat-trend--down">↓ from 6h 40m manual avg</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Escalated to you</p>
+          <p class="stat-value" data-count="6">0</p>
+          <p class="stat-trend">Needs human review</p>
+        </div>
+      </div>
+
+      <!-- Chart + breakdown -->
+      <div class="panel-row">
+        <div class="chart-card">
+          <div class="chart-card-head">
+            <p class="panel-title">Resolution volume, last 7 days</p>
+            <div class="chart-legend">
+              <span><i class="legend-dot legend-dot--ai"></i>AI resolved</span>
+              <span><i class="legend-dot legend-dot--human"></i>Escalated</span>
+            </div>
+          </div>
+          <div class="bar-chart" id="barChart"></div>
+        </div>
+        <div class="reason-card">
+          <p class="panel-title">Escalation reasons</p>
+          <ul class="reason-list" id="reasonList"></ul>
+        </div>
+      </div>
+
+      <!-- Queue -->
+      <div class="queue-card">
+        <div class="queue-card-head">
+          <p class="panel-title">Dispute queue</p>
+          <div class="queue-filters" id="queueFilters">
+            <button class="filter-pill is-active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="AI Resolving">AI Resolving</button>
+            <button class="filter-pill" data-filter="Escalated">Escalated</button>
+            <button class="filter-pill" data-filter="Resolved">Resolved</button>
+          </div>
+        </div>
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Issue</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Last activity</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="queueTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Case detail drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="case-drawer" id="caseDrawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <p class="eyebrow" id="drawerId">CASE</p>
+        <h2 class="drawer-title" id="drawerName">—</h2>
+      </div>
+      <button class="drawer-close" id="drawerClose" aria-label="Close case detail">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="drawer-tabs">
+      <button class="drawer-tab is-active" data-tab="trace">Resolution trace</button>
+      <button class="drawer-tab" data-tab="transcript">Transcript</button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="drawer-panel is-active" id="panel-trace">
+        <ol class="trace-list" id="traceList"></ol>
+        <div class="drawer-resolution" id="drawerResolution"></div>
+      </div>
+      <div class="drawer-panel" id="panel-transcript">
+        <div class="chat-log chat-log--drawer" id="drawerTranscript"></div>
+      </div>
+    </div>
+
+    <div class="drawer-actions" id="drawerActions"></div>
+  </aside>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
