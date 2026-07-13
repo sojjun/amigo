@@ -1,5 +1,5 @@
 /* ============================================================
-   MERIDIAN — AI Billing Resolution
+   Amigo — AI Billing Resolution
    Mock data + interaction logic (no backend)
    ============================================================ */
 
